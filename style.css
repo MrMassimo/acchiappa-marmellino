@@ -89,6 +89,102 @@ img {
   transform: translateY(4px);
   box-shadow: 0 2px 0 #a63b00, 0 4px 8px rgba(0,0,0,.35);
 }
+.big-btn.hidden {
+  visibility: hidden;
+}
+
+/* ===== Schermata livello (estrazione difficoltà) ===== */
+#screen-level {
+  background: linear-gradient(#7ec8f0, #b8e6a0);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 5vmin;
+}
+.level-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3vmin;
+  max-width: 560px;
+  width: 100%;
+}
+.level-pretitle {
+  font-size: clamp(1.1rem, 4vmin, 1.6rem);
+  color: #23421f;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+/* colore d'accento impostato via JS su --lv */
+.level-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(52vw, 34vh, 260px);
+  height: min(52vw, 34vh, 260px);
+  border-radius: 50%;
+  background: var(--lv, #f59f00);
+  border: 8px solid #fff;
+  box-shadow: 0 8px 0 rgba(0,0,0,.2), 0 12px 26px rgba(0,0,0,.35);
+  color: #fff;
+}
+.level-badge.spin {
+  animation: badge-spin .12s linear;
+}
+.level-badge.settle {
+  animation: badge-settle .5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes badge-spin {
+  0%   { transform: scale(.94); }
+  100% { transform: scale(1); }
+}
+@keyframes badge-settle {
+  0%   { transform: scale(.5) rotate(-12deg); }
+  60%  { transform: scale(1.12) rotate(4deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+.level-word {
+  font-size: clamp(1rem, 4vmin, 1.5rem);
+  letter-spacing: 3px;
+  opacity: .9;
+}
+.level-num {
+  font-size: clamp(4rem, 22vmin, 9rem);
+  font-weight: bold;
+  line-height: 1;
+  text-shadow: 3px 4px 0 rgba(0,0,0,.25);
+}
+.level-name {
+  font-size: clamp(2rem, 9vmin, 3.6rem);
+  color: var(--lv, #f59f00);
+  text-shadow: 2px 3px 0 #fff, 4px 5px 0 rgba(0,0,0,.15);
+  letter-spacing: 2px;
+}
+.level-pips {
+  display: flex;
+  gap: 2.5vmin;
+}
+.level-pips .pip {
+  width: clamp(20px, 6vmin, 34px);
+  height: clamp(20px, 6vmin, 34px);
+  border-radius: 50%;
+  background: rgba(255,255,255,.6);
+  border: 3px solid rgba(0,0,0,.15);
+}
+.level-pips .pip.on {
+  background: var(--lv, #f59f00);
+  border-color: #fff;
+  box-shadow: 0 0 8px 1px var(--lv, #f59f00);
+}
+.level-desc {
+  font-size: clamp(1rem, 3.8vmin, 1.4rem);
+  color: #23421f;
+  background: rgba(255,255,255,.75);
+  border-radius: 14px;
+  padding: 1.5vmin 3vmin;
+  min-height: 1.2em;
+}
 
 /* ===== Schermata di gioco ===== */
 #screen-game {
@@ -132,6 +228,42 @@ img {
   width: clamp(48px, 12vmin, 90px);
 }
 
+/* ===== Contatore tentativi a pallini ===== */
+.hud-attempts {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .6vmin;
+}
+.dots {
+  display: flex;
+  gap: 1vmin;
+}
+.dot {
+  width: clamp(14px, 4vmin, 22px);
+  height: clamp(14px, 4vmin, 22px);
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.55);
+  background: rgba(255,255,255,.12);
+  transition: transform .15s;
+}
+.dot.hit {
+  background: #37b24d;
+  border-color: #d3f9d8;
+  box-shadow: 0 0 6px 1px rgba(55,178,77,.8);
+  animation: dot-pop .25s ease;
+}
+.dot.miss {
+  background: #e03131;
+  border-color: #ffc9c9;
+  box-shadow: 0 0 6px 1px rgba(224,49,49,.8);
+  animation: dot-pop .25s ease;
+}
+@keyframes dot-pop {
+  0%   { transform: scale(.4); }
+  60%  { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
 #playfield {
   position: relative;
   flex: 1;
@@ -168,21 +300,19 @@ img {
 }
 .mole-window {
   position: absolute;
-  bottom: 14%;
+  bottom: 8%;
   left: 50%;
   transform: translateX(-50%);
-  width: 62%;
-  max-width: 140px;
-  height: 130%;
+  width: min(88%, 210px);
+  aspect-ratio: 1 / 1; /* stessa proporzione quadrata dello sprite: nessun ritaglio del disegno */
   overflow: hidden;
   z-index: 2;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
 }
 .mole {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
+  height: 100%;
   transform: translateY(105%);
   transition: transform .18s cubic-bezier(.34,1.4,.64,1);
 }
@@ -200,7 +330,10 @@ img {
   height: auto;
   transform: translate(-50%, -50%) scale(.4);
   z-index: 20;
-  animation: fx-pop .35s ease-out forwards;
+  animation-name: fx-pop;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  /* durata impostata via JS (style.animationDuration): più lunga per il colpo riuscito */
 }
 @keyframes fx-pop {
   0%   { opacity: 0; transform: translate(-50%, -50%) scale(.3) rotate(-8deg); }
