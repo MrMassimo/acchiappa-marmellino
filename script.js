@@ -43,7 +43,7 @@
   // --- Stato di partita ---
   var attempts, hits, gameActive, attemptIndex;
   var currentMole = null;   // elemento .mole attualmente fuori
-  var hideTimer = null, spawnTimer = null, endTimer = null, hitRetractTimer = null, spinTimer = null;
+  var hideTimer = null, spawnTimer = null, endTimer = null, hitRetractTimer = null;
   var lastHoleIndex = -1;
   var dotEls = [];
 
@@ -151,8 +151,7 @@
     clearTimeout(spawnTimer);
     clearTimeout(endTimer);
     clearTimeout(hitRetractTimer);
-    clearTimeout(spinTimer);
-    hideTimer = spawnTimer = endTimer = hitRetractTimer = spinTimer = null;
+    hideTimer = spawnTimer = endTimer = hitRetractTimer = null;
   }
 
   // Overlay effetto (stelline o puff) alle coordinate del playfield
@@ -275,33 +274,20 @@
     }
   }
 
-  // Estrae a caso il livello (1-3) e lo rivela con una breve animazione a "roulette".
+  // Estrae a caso il livello (1-3) e lo rivela subito, con un'animazione di
+  // comparsa fatta SOLO in CSS: niente catene di timer, così il risultato è
+  // sempre immediato e casuale, anche su telefoni lenti o schede in background.
   function revealLevel() {
     clearTimers();
     currentLevel = 1 + Math.floor(Math.random() * 3);
-    btnGo.classList.add("hidden");
+    renderLevel(currentLevel);
     showScreen(screenLevel);
-
-    var flips = 11;           // quante volte "gira" prima di fermarsi
-    var count = 0;
-    var delay = 80;
-    function flip() {
-      count++;
-      var last = count >= flips;
-      // durante la giostra mostra livelli a caso, all'ultimo blocca su quello estratto
-      renderLevel(last ? currentLevel : (1 + Math.floor(Math.random() * 3)));
-      levelBadge.classList.remove("spin", "settle");
-      void levelBadge.offsetWidth; // forza il restart dell'animazione
-      levelBadge.classList.add(last ? "settle" : "spin");
-      if (last) {
-        btnGo.classList.remove("hidden");
-        soundHit(); // piccolo squillo quando si ferma
-      } else {
-        delay += 22;           // rallenta progressivamente
-        spinTimer = setTimeout(flip, delay);
-      }
-    }
-    flip();
+    btnGo.classList.remove("hidden");
+    // riavvia l'animazione di comparsa del badge
+    levelBadge.classList.remove("reveal");
+    void levelBadge.offsetWidth;
+    levelBadge.classList.add("reveal");
+    soundHit(); // squillo di rivelazione
   }
 
   // ============ FLUSSO DI GIOCO ============
