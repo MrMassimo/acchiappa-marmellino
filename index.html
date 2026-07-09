@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Acchiappa Marmellino</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== SCHERMATA INIZIALE ===== -->
+  <section id="screen-start" class="screen active">
+    <div class="start-box">
+      <h1 class="game-title">Acchiappa<br>Marmellino!</h1>
+      <img class="giostraio" src="assets/Asset-9.png" alt="Il Giostraio ti dà il benvenuto">
+      <p class="start-text">Marmellino si nasconde nelle buche!<br>
+        Hai <strong>5 colpi</strong> per acchiapparlo <strong>3 volte</strong>.<br>
+        Occhio: ogni tap conta!</p>
+      <button id="btn-play" class="big-btn">GIOCA</button>
+    </div>
+  </section>
+
+  <!-- ===== SCHERMATA DI GIOCO ===== -->
+  <section id="screen-game" class="screen">
+    <header id="hud">
+      <div class="hud-item">
+        <span class="hud-label">Tentativi</span>
+        <span id="hud-attempts" class="hud-value">5</span>
+      </div>
+      <div class="hud-item hud-pc">
+        <img src="assets/Asset-6.png" alt="Punti Cattura" class="pc-icon">
+        <span class="hud-label">in palio</span>
+        <span class="hud-value">3</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Talpe</span>
+        <span id="hud-hits" class="hud-value">0/3</span>
+      </div>
+    </header>
+    <div id="playfield">
+      <div id="grid"></div>
+    </div>
+  </section>
+
+  <!-- ===== SCHERMATA FINALE ===== -->
+  <section id="screen-end" class="screen">
+    <div class="end-box">
+      <h2 id="end-title">HAI VINTO!</h2>
+      <p id="end-score" class="end-score">
+        <span id="end-pc">+3</span>
+        <img src="assets/Asset-6.png" alt="Punti Cattura" class="pc-icon big">
+        <span class="pc-text">Punti Cattura</span>
+      </p>
+      <button id="btn-replay" class="big-btn">Rigioca</button>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

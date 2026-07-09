@@ -1,0 +1,264 @@
+/* ===== Acchiappa Marmellino ===== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: "Trebuchet MS", "Comic Sans MS", Verdana, sans-serif;
+  background: #1b3a1b;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* ===== Schermate ===== */
+.screen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+.screen.active {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Schermata iniziale ===== */
+#screen-start {
+  background: linear-gradient(#7ec8f0, #b8e6a0);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4vmin;
+}
+.start-box {
+  max-width: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5vmin;
+}
+.game-title {
+  font-size: clamp(2rem, 8vmin, 4rem);
+  color: #b3261e;
+  text-shadow: 2px 3px 0 #fff, 4px 5px 0 rgba(0,0,0,.25);
+  line-height: 1.05;
+  letter-spacing: 1px;
+}
+.giostraio {
+  width: min(70vw, 45vh, 420px);
+  height: auto;
+}
+.start-text {
+  font-size: clamp(1.1rem, 4vmin, 1.6rem);
+  color: #23421f;
+  line-height: 1.4;
+  background: rgba(255,255,255,.75);
+  border-radius: 16px;
+  padding: 2vmin 3vmin;
+}
+
+/* ===== Bottoni ===== */
+.big-btn {
+  font-family: inherit;
+  font-size: clamp(1.5rem, 6vmin, 2.4rem);
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #fff;
+  background: linear-gradient(#ff9b2f, #e8590c);
+  border: 4px solid #fff;
+  border-radius: 999px;
+  padding: 0.5em 1.6em;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #a63b00, 0 10px 18px rgba(0,0,0,.35);
+  transition: transform .08s, box-shadow .08s;
+}
+.big-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #a63b00, 0 4px 8px rgba(0,0,0,.35);
+}
+
+/* ===== Schermata di gioco ===== */
+#screen-game {
+  background: #7ec8f0;
+}
+
+#hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2vmin;
+  padding: 1.5vmin 3vmin;
+  background: rgba(30, 60, 25, .85);
+  z-index: 10;
+}
+.hud-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2vmin;
+  color: #fff;
+}
+.hud-label {
+  font-size: clamp(.85rem, 3vmin, 1.3rem);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: .85;
+}
+.hud-value {
+  font-size: clamp(1.5rem, 6vmin, 2.6rem);
+  font-weight: bold;
+  color: #ffd43b;
+  text-shadow: 2px 2px 0 rgba(0,0,0,.5);
+  min-width: 1.2em;
+  text-align: center;
+}
+.pc-icon {
+  width: clamp(28px, 7vmin, 52px);
+  height: auto;
+}
+.pc-icon.big {
+  width: clamp(48px, 12vmin, 90px);
+}
+
+#playfield {
+  position: relative;
+  flex: 1;
+  background: url("assets/Asset-2.jpg") center bottom / cover no-repeat;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+#grid {
+  position: absolute;
+  inset: 34% 4% 3% 4%; /* lascia libero il cielo: buche solo sul prato */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 1vmin 2vmin;
+}
+
+/* ===== Buca e talpa ===== */
+.hole {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.hole-img {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  z-index: 1;
+}
+.mole-window {
+  position: absolute;
+  bottom: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 62%;
+  max-width: 140px;
+  height: 130%;
+  overflow: hidden;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.mole {
+  width: 100%;
+  height: auto;
+  transform: translateY(105%);
+  transition: transform .18s cubic-bezier(.34,1.4,.64,1);
+}
+.mole.up {
+  transform: translateY(8%);
+}
+.mole-window.hittable {
+  pointer-events: auto;
+}
+
+/* ===== Effetti colpo ===== */
+.fx {
+  position: absolute;
+  width: clamp(90px, 22vmin, 190px);
+  height: auto;
+  transform: translate(-50%, -50%) scale(.4);
+  z-index: 20;
+  animation: fx-pop .35s ease-out forwards;
+}
+@keyframes fx-pop {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.3) rotate(-8deg); }
+  35%  { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotate(3deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.25) rotate(0deg); }
+}
+
+/* ===== Schermata finale ===== */
+#screen-end {
+  background: center / cover no-repeat;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: center;
+  padding: 5vmin;
+}
+#screen-end.win  { background-image: url("assets/Asset-7.jpg"); }
+#screen-end.lose { background-image: url("assets/Asset-8.jpg"); }
+
+.end-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5vmin;
+  background: rgba(0, 0, 0, .55);
+  border-radius: 24px;
+  padding: 4vmin 6vmin;
+  margin-bottom: 4vmin;
+  backdrop-filter: blur(2px);
+}
+#end-title {
+  font-size: clamp(2.2rem, 10vmin, 4.5rem);
+  color: #ffd43b;
+  text-shadow: 3px 3px 0 rgba(0,0,0,.6);
+  letter-spacing: 2px;
+}
+#screen-end.lose #end-title {
+  color: #ff8787;
+}
+.end-score {
+  display: flex;
+  align-items: center;
+  gap: 1.5vmin;
+  font-size: clamp(1.4rem, 6vmin, 2.6rem);
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 2px 2px 0 rgba(0,0,0,.6);
+}
+#end-pc {
+  font-size: clamp(2rem, 9vmin, 4rem);
+  color: #69db7c;
+}
+#screen-end.lose #end-pc {
+  color: #ff6b6b;
+}
+
+/* ===== Tablet / schermi larghi ===== */
+@media (min-aspect-ratio: 4/3) {
+  #grid {
+    inset: 14% 12% 4% 12%;
+  }
+}
